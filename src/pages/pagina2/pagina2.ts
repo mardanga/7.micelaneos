@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import {LoadingController, NavController,  AlertController} from 'ionic-angular';
 
 
 @Component({
@@ -8,14 +8,14 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class Pagina2Page {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, private alertCtrl: AlertController, public loadingCtrl: LoadingController) {
   }
 
-  irPagina3(){
+  irPagina3() {
     this.navCtrl.push("mi-pagina3");
   }
 
-  volverHome(){
+  volverHome() {
     this.navCtrl.pop();
   }
 
@@ -44,11 +44,42 @@ export class Pagina2Page {
   }
 
   ionViewCanEnter() {
-    console.log("ionViewCanEnter");
+    let promesa = new Promise((resolve, reject) => {
+      let prompt = this.alertCtrl.create({
+        title: 'Pagina 3',
+        message: "Desea continuar a la pagina 3",
+        buttons: [
+          {
+            text: 'No',
+            handler: data => {
+              resolve(false);
+            }
+          },
+          {
+            text: 'Si',
+            handler: data => {
+              resolve(true);
+            }
+          }
+        ]
+      });
+      prompt.present();
+    });
+
+    return promesa;
   }
 
   ionViewCanLeave() {
-    console.log("ionViewCanLeave");
+    
+    let loader = this.loadingCtrl.create({
+      content: "Saliendo...",
+    });
+    loader.present();
+
+    setTimeout(function() {
+      loader.dismiss();
+    }, 3000);
   }
+  
 
 }
